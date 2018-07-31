@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bienvenue sur YouFlix !{% endblock %}
+
+{% block body %}
+<nav>
+    <li>1</li>
+    <li>2</li>
+    <li>3</li>
+</nav>
+
+    <div class="content_page">
+        <div class="main_information">
+            <p>Bonjour<br>Et bienvenue sur la page de YouFlix !<br>Ici vous pouvez uploader vos fichiers videos et creer votre propre Netflix !</p>
+        </div>
+        <div id="form_inscription">
+            <p>Ici formulaire..</p>
+            {{ form_start(form_enreg) }}
+            {{ form_row(form_enreg.nickname) }}
+            {{ form_row(form_enreg.email) }}
+            {{ form_row(form_enreg.birthday) }}
+            {{ form_row(form_enreg.password.first) }}
+            {{ form_row(form_enreg.password.second) }}
+            {{ form_end(form_enreg) }}
+        </div>
+    </div>
+{% endblock %}
