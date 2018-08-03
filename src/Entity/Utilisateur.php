@@ -51,7 +51,7 @@ class Utilisateur implements UserInterface
     private $roles;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Videos", mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Videos", mappedBy="iduser", orphanRemoval=true)
      */
     private $videos;
 
@@ -126,7 +126,7 @@ class Utilisateur implements UserInterface
     {
         if (!$this->videos->contains($video)) {
             $this->videos[] = $video;
-            $video->setUser($this);
+            $video->setIdUser($this);
         }
 
         return $this;
@@ -137,8 +137,8 @@ class Utilisateur implements UserInterface
         if ($this->videos->contains($video)) {
             $this->videos->removeElement($video);
             // set the owning side to null (unless already changed)
-            if ($video->getUser() === $this) {
-                $video->setUser(null);
+            if ($video->getIdUser() === $this) {
+                $video->setIdUser(null);
             }
         }
 

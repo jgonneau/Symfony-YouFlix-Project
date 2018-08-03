@@ -20,7 +20,12 @@ class Videos
      * @ORM\ManyToOne(targetEntity="App\Entity\Utilisateur", inversedBy="videos")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user;
+    private $iduser;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $byUser;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -32,19 +37,30 @@ class Videos
      */
     private $url;
 
+    /**
+     * @ORM\Column(type="text")
+     */
+    private $description;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+
     public function getId()
     {
         return $this->id;
     }
 
-    public function getUser(): ?Utilisateur
+    public function getIdUser(): ?Utilisateur
     {
-        return $this->user;
+        return $this->iduser;
     }
 
-    public function setUser(?Utilisateur $user): self
+    public function setIdUser(?Utilisateur $iduser): self
     {
-        $this->user = $user;
+        $this->iduser = $iduser;
 
         return $this;
     }
@@ -69,6 +85,39 @@ class Videos
     public function setUrl(string $url): self
     {
         $this->url = $url;
+
+        return $this;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    public function getByUser() : ?string
+    {
+        return $this->byUser;
+    }
+
+    public function setByUser($byUser): self
+    {
+        $this->byUser = $byUser;
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

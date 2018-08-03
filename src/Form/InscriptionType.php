@@ -21,15 +21,15 @@ class InscriptionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nickname')
-            ->add('email', EmailType::class)
-            ->add('birthday', BirthdayType::class)
+            ->add('nickname', null, ['label' => 'Votre nom d\'utilisateur :'])
+            ->add('email', EmailType::class, ['label' => 'Votre E-mail :'])
+            ->add('birthday', BirthdayType::class, ['label' => 'Votre date d\'anniversaire :'])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'first_options' => array('label' => 'Entrez le mot de passe'),
                 'second_options' => array('label' => 'Repeter le mot de passe'),
             ])
-            ->add('Submit', SubmitType::class)
+            ->add('Submit', SubmitType::class, ['label' => 'S\'enregistrer !'])
         ;
     }
 

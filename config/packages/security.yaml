@@ -6,7 +6,14 @@ security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         in_memory: { memory: ~ }
-        donnees:
+        multiple_provider:
+            chain:
+                providers: [db_username, db_email]
+        db_username:
+            entity:
+                class: App\Entity\Utilisateur
+                property: nickname
+        db_email:
             entity:
                 class: App\Entity\Utilisateur
                 property: email
@@ -17,7 +24,7 @@ security:
         main:
             anonymous: true
 
-            provider: donnees
+            provider: multiple_provider
 
             form_login:
                 login_path: secur_connexion
@@ -41,3 +48,4 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/compte, roles: ROLE_USER }

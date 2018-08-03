@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+
+    <h3>Ajout de video !</h3>
+    {{ form_start(form_video) }}
+    {{ form_row(form_video.url) }}
+    {{ form_row(form_video.title) }}
+    {{ form_row(form_video.description) }}
+    {{ form_end(form_video) }}
+
+{% endblock %}

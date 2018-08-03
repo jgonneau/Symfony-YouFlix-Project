@@ -35,6 +35,12 @@ class SecurRoutesController extends Controller
             return $this->redirectToRoute('secur_connexion');
         }
 
+        //Redirection si l'utilisateur est déjà connecté.
+        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY'))
+        {
+            return $this->redirectToRoute('dashboard');
+        }
+
         return $this->render('secur_routes/index.html.twig', [
             'controller_name' => 'SecurRoutesController',
             'form_enreg' => $form->createView()
@@ -47,14 +53,12 @@ class SecurRoutesController extends Controller
      */
     public function secur_connexion_route (Request $request, ObjectManager $manager)
     {
-        //$form = $this->createForm();
-        /*$form->handleRequest($request);
+        //Redirection si l'utilisateur est déjà connecté.
+        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY'))
+        {
+            return $this->redirectToRoute('dashboard');
+        }
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // perform some action...
-
-            return $this->redirectToRoute('secur_connexion');
-        }*/
         return $this->render( 'secur_routes/login.html.twig',[
             'vide' => 'test',
         ]);
