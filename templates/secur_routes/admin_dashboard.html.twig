@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Espace Admin !{% endblock %}
+
+{% block body %}
+
+    {% if users | length > 0 %}
+        <p>List of users :</p>
+        {%  for user in users %}
+        <div>
+            <h3>{{ user.nickname }}</h3>
+            <ul>
+                {% for user_video in videos %} <!-- add filtre here -->
+                    <li>{{ user_video.title }} | {{ user_video.url }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+
+    {% else %}
+        <p>There is no users in database.</p>
+    {% endif %}
+
+{% endblock %}

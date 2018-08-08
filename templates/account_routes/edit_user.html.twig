@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form_user 'bootstrap_4_layout.html.twig' %}
+
+{% block title %}Modification information utilisateur : {{ user.nickname }}{% endblock %}
+
+{% block body %}
+
+    <h3>Edition des informations de votre profil !</h3>
+    {{ form_start(form_user) }}
+    {{ form_row(form_user.nickname) }}
+    {{ form_row(form_user.email) }}
+    {{ form_row(form_user.birthday) }}
+    <p>Editer ces deux champs ci-dessous pour changer le password :</p>
+    {{ form_end(form_user) }}
+
+{% endblock %}

@@ -4,9 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Videos;
 use App\Form\AjoutVideoType;
-use App\Repository\UtilisateurRepository;
 use App\Repository\VideosRepository;
-use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -60,4 +58,54 @@ class AccountRoutesController extends Controller
             'form_video' => $form->createView(),
         ]);
     }
+
+    /**
+     * @Route("/edition_video", name="edit_video_user")
+     */
+    public function edit_video (Request $request, ObjectManager $manager, VideosRepository $videosRepository)
+    {
+        $id_video = $request->get("v_id");
+        //$id_video = $id;
+
+        $video = $videosRepository->find($id_video);
+
+        $form = $this->createForm( AjoutVideoType::class, $video); //todo mode edit
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $manager->persist($video);
+            $manager->flush();
+
+            return $this->redirectToRoute('dashboard');
+        }
+
+        return $this->render ( 'account_routes/edit_video.html.twig', [
+            'form_video' => $form->createView(),
+            'video_to_edit' => $video
+        ]);
+    }
+
+    /**
+     * @Route("/suppression_video", name="delete_video_user")
+     */
+    public function delete_video (Request $request, ObjectManager $manager, VideosRepository $videosRepository)
+    {
+        $id_video = $request->get("v_id");
+        //$id_video = $id;
+
+        $video = $videosRepository->find($id_video);
+
+        if ($video->getIdUser()->getId() === $this->getUser()->getId()) {
+
+            $manager->remove($video);
+            $manager->flush();
+        }
+
+        //add flash message here!
+
+        return $this->redirectToRoute('dashboard');
+    }
+
 }

@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form_video 'bootstrap_4_layout.html.twig' %}
+
+{% block title %}Edition video : {{ video_to_edit.title }}{% endblock %}
+
+{% block body %}
+
+    <button>Supprimer video</button>
+
+    <h3>Edition de la vidéo : " {{ video_to_edit.title }} " !</h3>
+    {{ form_start(form_video) }}
+    {{ form_row(form_video.url) }}
+    {{ form_row(form_video.title) }}
+    {{ form_row(form_video.description) }}
+    {{ form_end(form_video) }}
+
+{% endblock %}

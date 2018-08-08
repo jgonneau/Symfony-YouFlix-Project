@@ -19,9 +19,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Utilisateur implements UserInterface
 {
     /**
+     *  @Assert\Uuid
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="string", length=255)
      */
     private $id;
 

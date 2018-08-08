@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\VideosRepository")
@@ -10,9 +11,10 @@ use Doctrine\ORM\Mapping as ORM;
 class Videos
 {
     /**
+     * @Assert\Uuid
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="string", length=255)
      */
     private $id;
 

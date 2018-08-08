@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Utilisateur;
+use App\Form\EditProfileType;
 use App\Form\InscriptionType;
+use App\Repository\UtilisateurRepository;
+use App\Repository\VideosRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -63,4 +66,82 @@ class SecurRoutesController extends Controller
             'vide' => 'test',
         ]);
     }
+
+    /**
+     * @Route("/edition_profil", name="edition_profil_user")
+     */
+    public function secur_edit_profile (Request $request, ObjectManager $manager, UtilisateurRepository $utilisateurRepository, UserPasswordEncoderInterface $encoder)
+    {
+        //$user = new Utilisateur();
+
+        //$user->setNickname($this->getUser()->getNickname());
+        //$user->setEmail($this->getUser()->getEmail());
+        //$user->setBirthday($this->getUser()->getBirthday());
+
+        $user = $utilisateurRepository->find($this->getUser()->getId());
+
+        $form = $this->createForm(EditProfileType::class, $user);
+
+        $form->handleRequest($request);
+
+        dump($user);
+        dump($request);
+
+        if ($form->isSubmitted() && $form->isValid())//$request->request->count() > 0) {
+        {
+            //verif password here
+            /*if ($user->getPassword() != "")
+            {
+                $hash = $encoder->encodePassword($user, $user->getPassword());
+                $user->setPassword($hash);
+            }*/
+
+            //dump($user);
+
+         //   $user->setNickname($request->request->get('edit_profile', 'nickname'));
+            //$user->setEmail($request->request->get('edit_profile["email"]'));
+            //$user->setBirthday($request->request->get('edit_profile["birthday"]'));
+
+            $manager->persist($user);
+            $manager->flush();
+
+            return $this->redirectToRoute('dashboard');
+           /* return $this->render('account_routes/edit_user.html.twig', [
+                'form_user' => $form->createView(),
+                'user' => $user
+            ]);*/
+        }
+
+
+        return $this->render('account_routes/edit_user.html.twig', [
+            'form_user' => $form->createView(),
+            'user' => $user
+        ]);
+    }
+
+    /**
+     * @Route("/admin", name="secur_admin_dashboard")
+     *
+     */
+    public function secur_admin_route (Request $request, ObjectManager $manager, UtilisateurRepository $usersRepository, VideosRepository $videosRepository)
+    {
+           //if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
+            if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') )//if ($this->getUser()->getRoles())
+            {
+               $allUsers = $usersRepository->findAll();
+               $allVideos = $videosRepository->findAll();
+
+
+               return $this->render ( 'secur_routes/admin_dashboard.html.twig', [
+                   'Welcome' => $this->getUser()->getNickname(),
+                   'users' => $allUsers,
+                    'videos' => $allVideos,
+               ]);
+           }
+           else {
+               return $this->redirectToRoute('dashboard');
+           }
+
+    }
+
 }
