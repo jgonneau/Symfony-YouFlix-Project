@@ -24,7 +24,7 @@
     </div>
 
     {% if users | length > 0 %}
-        <p>List of users :</p>
+        <h2 class="text-primary">Liste d'utilisateur :</h2>
         {%  for user in users if not ('ROLE_ADMIN' in user.roles) %}
             <hr>
         <div>
@@ -33,9 +33,12 @@
             <div>
 
                 {% for user_video in videos if user_video.iduser.id == user.id %}
+                    <div id="content_video_">
+                    <div><h4>{{ user_video.title }}</h4>
                     <a href="{{ path('edit_video_user_by_admin') }}/{{ user.id }}/{{ user_video.id }}" ><button class="btn btn-primary">Editer la vidéo</button></a>
-                    <a href="{{ path('delete_video_user_by_admin') }}/{{ user.id }}/{{ user_video.id }}" ><button class="btn btn-primary">Supprimer la vidéo</button></a>
-                    <h4>{{ user_video.title }}</h4> <iframe width="560" height="315" src=" {{ user_video.url | replace({'watch?v=': 'embed/'})  ~ '?rel=0&showinfo=0' }} " frameborder="0" allow="encrypted-media" allowfullscreen></iframe> <p>{{ user_video.description }}</p>
+                        <a href="{{ path('delete_video_user_by_admin') }}/{{ user.id }}/{{ user_video.id }}" ><button class="btn btn-primary">Supprimer la vidéo</button></a> </div>
+                     <iframe width="560" height="315" src=" {{ user_video.url | replace({'watch?v=': 'embed/'})  ~ '?rel=0&showinfo=0' }} " frameborder="0" allow="encrypted-media" allowfullscreen></iframe> <p>{{ user_video.description }}</p>
+                    </div>
                 {% endfor %}
             </div>
         </div>
