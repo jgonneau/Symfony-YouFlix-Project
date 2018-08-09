@@ -16,7 +16,7 @@
 
     {% for label, messages in app.flashes %}
         {% for message in messages %}
-            <div class="flash-{{ label }} badge badge-primary">
+            <div class="flash-{{ label }} alert alert-dismissible alert-primary">
                 {{ message }}
             </div>
         {% endfor %}
@@ -24,5 +24,7 @@
 
         {% block body %}{% endblock %}
         {% block javascripts %}{% endblock %}
+
+    <footer class="navbar fixed-bottom ms-auto bg-primary"> YouFlix </footer>
     </body>
 </html>

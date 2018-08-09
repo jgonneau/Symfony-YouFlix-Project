@@ -7,7 +7,7 @@
 <div class="content_page">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <a class="navbar-brand" href="#">YouFLix</a>
-        <h1>Bonjour {{ username }}! </h1>
+
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -15,31 +15,31 @@
 
         <div class="collapse navbar-collapse justify-content-end" id="navbarColor01">
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('secur_connexion') }}">Connexion</a>
-                </li>
                 {% if is_granted('ROLE_ADMIN') %}
                 <a href="{{ path("secur_admin_dashboard") }}"><li>Espace admin</a></li>
                 {% endif %}
-                <li><a href="{{ path("edition_profil_user") }}">Editer son profil</a></li>
-                <li><a href="{{ path("add_video_user") }}">Ajouter une vidéo</a></li>
-                <li>Rechercher une vidéo</li>
-                <li><a href="{{ path("logout") }}" >Déconnexion</a></li>
+                <li class="nav-item" ><a class="nav-link" href="{{ path("edition_profil_user") }}">Editer son profil</a></li>
+                <li class="nav-item" ><a class="nav-link" href="{{ path("add_video_user") }}">Ajouter une vidéo</a></li>
+                <li class="nav-item" ><a class="nav-link" href="{{ path("logout") }}" >Déconnexion</a></li>
             </ul>
         </div>
     </nav>
 </div>
 
-
+<h5 class="text-primary navbar-brand">Bonjour {{ username }}! </h5>
+<br/>
+<p class="badge badge-primary">Voici vos videos :</p>
     <div id="content_videos_gallery">
         <ul>
         {%  for video in videos_user %}
-            <li>{{ video.url }}  <a href="{{ path('edit_video_user') }}?v_id={{ video.id }}"><button>Editer</button></a> | <a href="{{ path('delete_video_user') }}?v_id={{ video.id }}"><button>SUPPR</button></a></li>
+            <hr>
+            <div id="videos_user">
+            <li> {{ video.title }} ( <a href="{{ video.url }}">{{ video.url }}</a> ) <a href="{{ path('edit_video_user') }}?v_id={{ video.id }}"><button class="btn btn-primary">Editer</button></a> | <a href="{{ path('delete_video_user') }}?v_id={{ video.id }}"><button class="btn btn-primary">Supprimer</button></a></li>
             <div><iframe width="560" height="315" src=" {{  video.url | replace({'watch?v=': 'embed/'})  ~ '?rel=0&showinfo=0' }} " frameborder="0" allow="encrypted-media" allowfullscreen></iframe></div>
-
+            </div>
 
         {%  endfor %}
         </ul>
 
-    <footer>¤ YouFlix ¤</footer>
+
 {% endblock %}

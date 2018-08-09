@@ -23,3 +23,8 @@ commande            params
 app:create-admin    (pseudo) (email) (password)
 ````
 
+Access to the database at :
+```
+http://localhost:8080 
+```
+id : root, password : root

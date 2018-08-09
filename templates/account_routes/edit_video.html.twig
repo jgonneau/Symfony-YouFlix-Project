@@ -9,7 +9,7 @@
     <div class="content_page">
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
             <a class="navbar-brand" href="#">YouFLix</a>
-            <h2>Edition video : {{ video_to_edit.title }}</h2>
+           
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -25,9 +25,8 @@
         </nav>
     </div>
 
-    <button>Supprimer video</button>
-
-    <h3>Edition de la vidéo : " {{ video_to_edit.title }} " !</h3>
+    
+    <h3 class="text-primary navbar-brand">Edition de la vidéo : " {{ video_to_edit.title }} " !</h3>
     {{ form_start(form_video) }}
     {{ form_row(form_video.url) }}
     {{ form_row(form_video.title) }}
