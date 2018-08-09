@@ -17,14 +17,12 @@ class AccountRoutesController extends Controller
      */
     public function index(VideosRepository $videosRepository)
     {
-
-        dump($this->getUser());
-
+        //On recupere les videos associé à l'utilisateur en cours
         $videos = $videosRepository->findBy([
             'iduser' => $this->getUser()->getId(),
         ]);
-        dump($videos);
 
+        //Affichage du contenu de l'espace utilisateur avec ses videos
         return $this->render('account_routes/index.html.twig', [
             'username' => $this->getUser()->getEmail(),
             'videos_user' => $videos,
@@ -36,12 +34,14 @@ class AccountRoutesController extends Controller
      */
     public function add_video (Request $request, ObjectManager $manager)
     {
+        //Creation nouvel objet video, le bindant au formulaire de video
         $video = new Videos();
 
         $form = $this->createForm(AjoutVideoType::class, $video);
 
         $form->handleRequest($request);
 
+        //Si formulaire valide, on update
         if ($form->isSubmitted() && $form->isValid()) {
 
             $video->setIdUser($this->getUser());
@@ -50,9 +50,14 @@ class AccountRoutesController extends Controller
             $manager->persist($video);
             $manager->flush();
 
+            //Flash message indication
+            $this->addFlash('info', 'La video "'.$video->getTitle().'" a bien été crée.');
+
+            //Retour à l'espace utilisateur
             return $this->redirectToRoute('dashboard');
         }
 
+        //Affichage du formulaire pour ajouter une video
         return $this->render( 'account_routes/add_video.html.twig', [
             'username' => $this->getUser()->getNickname(),
             'form_video' => $form->createView(),
@@ -65,15 +70,19 @@ class AccountRoutesController extends Controller
      */
     public function edit_video (Request $request, ObjectManager $manager, VideosRepository $videosRepository, $uuid_user = null, $uuid_video = null)
     {
+        //Definition à vide de la variable $id_video, pour déterminer is oui ou non, video trouvée
         $id_video = "";
 
+        //Si le parametre GET "v_id" est existant, alors on le recupere
         if ($request->get("v_id")) {
             $id_video = $request->get("v_id");
         }
         else {
+            //Sinon, on recupere le $uuid_video qui est passé en tant que slug
             $id_video = $uuid_video;
         }
 
+        //Requete recherche video dans la base de données
         $video = $videosRepository->find($id_video);
 
         //Si video non existante ou non appartenante à un utilisateur
@@ -91,24 +100,33 @@ class AccountRoutesController extends Controller
             }
         }
 
-        $form = $this->createForm(AjoutVideoType::class, $video); //todo mode edit
-
+        //Creation formulaire et réactivité aux requetes
+        $form = $this->createForm(AjoutVideoType::class, $video);
         $form->handleRequest($request);
 
+        //Si formulaire soumit et valide, alors on enregistre les modifications
         if ($form->isSubmitted() && $form->isValid())
         {
-            $manager->persist($video);
-            $manager->flush();
+            //Si l'utilisateur possède bien la video, on modifie ses infos
+            //Si l' $uuid_user est present, alors on détermine que c'est un admin, on autorise donc la modification
+            if ($video->getIdUser()->getId() === $this->getUser()->getId() || $uuid_user) {
 
-            //Flash message indication
-            $this->addFlash('mess', 'Les infos de la video ont été changés.');
+                $manager->persist($video);
+                $manager->flush();
 
+                //Flash message indication
+                $this->addFlash('info', 'Les infos de la video "'.$video->getTitle().'" ont été changés.');
+            }
+
+            //Si $uuid_video existant, alors on determine que l'utilisateur est admin
+            //Auquel cas, on redirige à l'espace admin pour les admins, et l'espace user pour les users
             if (!$uuid_video)
                 return $this->redirectToRoute('dashboard');
             else
                 return $this->redirectToRoute('secur_admin_dashboard');
         }
 
+        //Affichage du formulaire pour editer la video
         return $this->render ( 'account_routes/edit_video.html.twig', [
             'form_video' => $form->createView(),
             'video_to_edit' => $video
@@ -121,13 +139,16 @@ class AccountRoutesController extends Controller
      */
     public function delete_video (Request $request, ObjectManager $manager, VideosRepository $videosRepository, $uuid_user = null, $uuid_video = null)
     {
+        //Si le parametre GET "v_id" est existant, alors on le recupere
         if ($request->get("v_id")) {
             $id_video = $request->get("v_id");
         }
         else {
+            //Sinon, on recupere le $uuid_video qui est passé en tant que slug
             $id_video = $uuid_video;
         }
 
+        //Requete recherche video dans la base de données
         $video = $videosRepository->find($id_video);
 
         //Si video non existante ou non appartenante à un utilisateur
@@ -145,13 +166,19 @@ class AccountRoutesController extends Controller
             }
         }
 
+        //Si l'utilisateur possède bien la video, on la supprime
+        //Si l' $uuid_user est present, alors on détermine que c'est un admin, on autorise donc la suppression
         if ($video->getIdUser()->getId() === $this->getUser()->getId() || $uuid_user) {
 
             $manager->remove($video);
             $manager->flush();
+
+            //Flash message indication
+            $this->addFlash('info', 'La vidéo "'.$video->getTitle().'"" a bien été supprimée.');
         }
 
-        //add flash message here!
+        //Si $uuid_video existant, alors on determine que l'utilisateur est admin
+        //Auquel cas, on redirige à l'espace admin pour les admins, et l'espace user pour les users
         if (!$uuid_video)
             return $this->redirectToRoute('dashboard');
         else

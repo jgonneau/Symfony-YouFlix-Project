@@ -21,17 +21,18 @@ class SecurRoutesController extends Controller
      */
     public function secur_inscription_route(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder)
     {
+        //nouvel objet utilisateur vide
         $utilisateur = new Utilisateur();
 
+        //Creation formulaire, relié à l'objet utilisateur
         $form = $this->createForm(InscriptionType::class, $utilisateur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            //Si le formulaire est valide, alors on crée l'utilisateur avec ses infos
             $hash_password = $encoder->encodePassword($utilisateur, $utilisateur->getPassword());
-
             $utilisateur->setPassword($hash_password);
-
             $manager->persist($utilisateur);
             $manager->flush();
 
@@ -44,6 +45,7 @@ class SecurRoutesController extends Controller
             return $this->redirectToRoute('dashboard');
         }
 
+        //Affichage de la page d'accueil si l'utilisateur n'est pas connecté
         return $this->render('secur_routes/index.html.twig', [
             'controller_name' => 'SecurRoutesController',
             'form_enreg' => $form->createView()
@@ -65,6 +67,7 @@ class SecurRoutesController extends Controller
             ]);
         }
 
+        //L'on affiche le formulaire de connexion si l'utilisateur n'est pas connecté
         return $this->render( 'secur_routes/login.html.twig',[
         ]);
     }
@@ -75,15 +78,14 @@ class SecurRoutesController extends Controller
      */
     public function secur_admin_route (Request $request, ObjectManager $manager, UtilisateurRepository $usersRepository, VideosRepository $videosRepository)
     {
-        //if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') )//if ($this->getUser()->getRoles())
+        //Si l'utilisateur a un role d'admin, l'on lui donne acces à la page
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') )
         {
+            //L'on recupere tous les utilisateurs et leurs videos associées pour afficher ensuite
             $allUsers = $usersRepository->findAll();
             $allVideos = $videosRepository->findAll();
 
-            dump($allUsers);
-            dump($allVideos);
-
+            //Affichage contenu pour l'espace admin
             return $this->render ( 'secur_routes/admin_dashboard.html.twig', [
                 'Welcome' => $this->getUser()->getNickname(),
                 'users' => $allUsers,
@@ -91,6 +93,7 @@ class SecurRoutesController extends Controller
             ]);
         }
         else {
+            //Sinon, retour à la page d'accueil
             return $this->redirectToRoute('dashboard');
         }
 
@@ -102,53 +105,39 @@ class SecurRoutesController extends Controller
      */
     public function secur_edit_profile (Request $request, ObjectManager $manager, UtilisateurRepository $utilisateurRepository, UserPasswordEncoderInterface $encoder, $uuid_user = null)
     {
-        //$user = new Utilisateur();
-
-        //$user->setNickname($this->getUser()->getNickname());
-        //$user->setEmail($this->getUser()->getEmail());
-        //$user->setBirthday($this->getUser()->getBirthday());
-
+        // Si uuid_user existant, alors l'admin est connecté (dans security.yaml, que les admins peuvent acceder à la route avec $uuid comme slug)
         if (!$uuid_user) {
+            //Si uuid non existant, alors on recupere les infos utilisateur en cours
             $user = $utilisateurRepository->find($this->getUser()->getId());
         }
         else {
             $user = $utilisateurRepository->find($uuid_user);
         }
-        //$user = $utilisateurRepository->find($this->getUser()->getId());
 
+
+        //Creation formulaire, et reactivité aux requetes
         $form = $this->createForm(EditProfileType::class, $user);
-
         $form->handleRequest($request);
 
-        dump($user);
-        dump($request);
-
-        if ($form->isSubmitted() && $form->isValid())//$request->request->count() > 0) {
+        //Si formulaire est valide on update les donnees utilisateurs
+        if ($form->isSubmitted() && $form->isValid())
         {
-            //verif password here
-            /*if ($user->getPassword() != "")
-            {
-                $hash = $encoder->encodePassword($user, $user->getPassword());
-                $user->setPassword($hash);
-            }*/
-
-            //dump($user);
-
-         //   $user->setNickname($request->request->get('edit_profile', 'nickname'));
-            //$user->setEmail($request->request->get('edit_profile["email"]'));
-            //$user->setBirthday($request->request->get('edit_profile["birthday"]'));
-
             $manager->persist($user);
             $manager->flush();
 
-            if (!$uuid_user)
+            //Si utilisateur on le redirige à son espace
+            //Si admin, on redirige à l'espace admin
+            if (!$uuid_user) {
+
+                //Flash message indication
+                $this->addFlash('info', 'Votre profil est à jour !');
+
                 return $this->redirectToRoute('dashboard');
-            else
-                return $this->redirectToRoute('secur_admin_dashboard');
-           /* return $this->render('account_routes/edit_user.html.twig', [
-                'form_user' => $form->createView(),
-                'user' => $user
-            ]);*/
+            }
+            else {
+                //Flash message indication
+                $this->addFlash('info', 'Le profil de l\'utilisateur '.$user->getNickname().'('.$user->getEmail().')'.' a été mis à jour.');
+                return $this->redirectToRoute('secur_admin_dashboard'); }
         }
 
 

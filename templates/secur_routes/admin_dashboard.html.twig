@@ -26,6 +26,7 @@
     {% if users | length > 0 %}
         <p>List of users :</p>
         {%  for user in users if not ('ROLE_ADMIN' in user.roles) %}
+            <hr>
         <div>
             <h3>{{ user.nickname }} <a href="{{ path('edit_info_user_by_admin') }}/{{ user.id }}" ><button>Editer son compte</button></a>
             </h3>
