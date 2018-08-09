@@ -28,7 +28,7 @@
         {%  for user in users if not ('ROLE_ADMIN' in user.roles) %}
             <hr>
         <div>
-            <h3 class="bg-primary text-white">{{ user.nickname }} <a href="{{ path('edit_info_user_by_admin') }}/{{ user.id }}" ><button class="btn btn-primary">Editer les infos du compte</button></a>
+            <h3 class="text-primary">{{ user.nickname }} <a href="{{ path('edit_info_user_by_admin') }}/{{ user.id }}" ><button class="btn btn-primary">Editer les infos du compte</button></a>
             </h3>
             <div>
 
