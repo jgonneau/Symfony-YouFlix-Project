@@ -91,14 +91,6 @@ class AccountRoutesController extends Controller
             //Alors redirection vers le dashboard, menu principal
             return $this->redirectToRoute('dashboard');
         }
-        else
-        {
-            //Redirection vers le dashboard si video non appartenante à un utilisateur
-            if ($video->getIdUser() !== $uuid_user && $uuid_user)
-            {
-                return $this->redirectToRoute('dashboard');
-            }
-        }
 
         //Creation formulaire et réactivité aux requetes
         $form = $this->createForm(AjoutVideoType::class, $video);
@@ -156,14 +148,6 @@ class AccountRoutesController extends Controller
         {
             //Alors redirection vers le dashboard, menu principal
             return $this->redirectToRoute('dashboard');
-        }
-        else
-        {
-            //Redirection vers le dashboard si video non appartenante à un utilisateur
-            if ($video->getIdUser() !== $uuid_user && $uuid_user)
-            {
-                return $this->redirectToRoute('dashboard');
-            }
         }
 
         //Si l'utilisateur possède bien la video, on la supprime
