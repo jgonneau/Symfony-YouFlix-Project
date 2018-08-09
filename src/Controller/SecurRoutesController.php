@@ -59,18 +59,48 @@ class SecurRoutesController extends Controller
         //Redirection si l'utilisateur est déjà connecté.
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY'))
         {
-            return $this->redirectToRoute('dashboard');
+            return $this->redirectToRoute('dashboard',[
+                '_username' => $this->getUser()->getNickname(),
+                '_uuid' => $this->getUser()->getId()
+            ]);
         }
 
         return $this->render( 'secur_routes/login.html.twig',[
-            'vide' => 'test',
         ]);
     }
 
     /**
-     * @Route("/edition_profil", name="edition_profil_user")
+     * @Route("/admin", name="secur_admin_dashboard")
+     *
      */
-    public function secur_edit_profile (Request $request, ObjectManager $manager, UtilisateurRepository $utilisateurRepository, UserPasswordEncoderInterface $encoder)
+    public function secur_admin_route (Request $request, ObjectManager $manager, UtilisateurRepository $usersRepository, VideosRepository $videosRepository)
+    {
+        //if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') )//if ($this->getUser()->getRoles())
+        {
+            $allUsers = $usersRepository->findAll();
+            $allVideos = $videosRepository->findAll();
+
+            dump($allUsers);
+            dump($allVideos);
+
+            return $this->render ( 'secur_routes/admin_dashboard.html.twig', [
+                'Welcome' => $this->getUser()->getNickname(),
+                'users' => $allUsers,
+                'videos' => $allVideos,
+            ]);
+        }
+        else {
+            return $this->redirectToRoute('dashboard');
+        }
+
+    }
+
+    /**
+     * @Route("/espace_videos/edition_profile", name="edition_profil_user")
+     * @Route("/admin/{uuid_user}", name="edit_info_user_by_admin")
+     */
+    public function secur_edit_profile (Request $request, ObjectManager $manager, UtilisateurRepository $utilisateurRepository, UserPasswordEncoderInterface $encoder, $uuid_user = null)
     {
         //$user = new Utilisateur();
 
@@ -78,7 +108,13 @@ class SecurRoutesController extends Controller
         //$user->setEmail($this->getUser()->getEmail());
         //$user->setBirthday($this->getUser()->getBirthday());
 
-        $user = $utilisateurRepository->find($this->getUser()->getId());
+        if (!$uuid_user) {
+            $user = $utilisateurRepository->find($this->getUser()->getId());
+        }
+        else {
+            $user = $utilisateurRepository->find($uuid_user);
+        }
+        //$user = $utilisateurRepository->find($this->getUser()->getId());
 
         $form = $this->createForm(EditProfileType::class, $user);
 
@@ -105,7 +141,10 @@ class SecurRoutesController extends Controller
             $manager->persist($user);
             $manager->flush();
 
-            return $this->redirectToRoute('dashboard');
+            if (!$uuid_user)
+                return $this->redirectToRoute('dashboard');
+            else
+                return $this->redirectToRoute('secur_admin_dashboard');
            /* return $this->render('account_routes/edit_user.html.twig', [
                 'form_user' => $form->createView(),
                 'user' => $user
@@ -119,29 +158,6 @@ class SecurRoutesController extends Controller
         ]);
     }
 
-    /**
-     * @Route("/admin", name="secur_admin_dashboard")
-     *
-     */
-    public function secur_admin_route (Request $request, ObjectManager $manager, UtilisateurRepository $usersRepository, VideosRepository $videosRepository)
-    {
-           //if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
-            if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') )//if ($this->getUser()->getRoles())
-            {
-               $allUsers = $usersRepository->findAll();
-               $allVideos = $videosRepository->findAll();
 
-
-               return $this->render ( 'secur_routes/admin_dashboard.html.twig', [
-                   'Welcome' => $this->getUser()->getNickname(),
-                   'users' => $allUsers,
-                    'videos' => $allVideos,
-               ]);
-           }
-           else {
-               return $this->redirectToRoute('dashboard');
-           }
-
-    }
 
 }

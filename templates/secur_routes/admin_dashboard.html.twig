@@ -6,19 +6,25 @@
 
     {% if users | length > 0 %}
         <p>List of users :</p>
-        {%  for user in users %}
+        {%  for user in users if not ('ROLE_ADMIN' in user.roles) %}
         <div>
-            <h3>{{ user.nickname }}</h3>
-            <ul>
-                {% for user_video in videos %} <!-- add filtre here -->
-                    <li>{{ user_video.title }} | {{ user_video.url }}</li>
+            <h3>{{ user.nickname }} <a href="{{ path('edit_info_user_by_admin') }}/{{ user.id }}" ><button>Editer son compte</button></a>
+            </h3>
+            <div>
+
+                {% for user_video in videos if user_video.iduser.id == user.id %} <!-- add filtre here -->
+                    <a href="{{ path('edit_video_user_by_admin') }}/{{ user.id }}/{{ user_video.id }}" ><button>Editer la vidéo</button></a>
+                    <a href="{{ path('delete_video_user_by_admin') }}/{{ user.id }}/{{ user_video.id }}" ><button>Supprimer la vidéo</button></a>
+                    <h4>{{ user_video.title }}</h4> <iframe width="560" height="315" src=" {{ user_video.url | replace({'watch?v=': 'embed/'})  ~ '?rel=0&showinfo=0' }} " frameborder="0" allow="encrypted-media" allowfullscreen></iframe> <p>{{ user_video.description }}</p>
                 {% endfor %}
-            </ul>
+            </div>
         </div>
+        {% else %}
+            <p>Aucun utilisateur trouvé !</p>
         {% endfor %}
 
     {% else %}
-        <p>There is no users in database.</p>
+        <p>Il n'y a aucun utilisateur dans la base de données.</p>
     {% endif %}
 
 {% endblock %}

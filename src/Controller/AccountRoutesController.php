@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class AccountRoutesController extends Controller
 {
     /**
-     * @Route("/compte", name="dashboard")
+     * @Route("/espace_videos", name="dashboard")
      */
     public function index(VideosRepository $videosRepository)
     {
@@ -32,7 +32,7 @@ class AccountRoutesController extends Controller
     }
 
     /**
-     * @Route("/ajout_video", name="add_video_user")
+     * @Route("/espace_videos/ajout_video", name="add_video_user")
      */
     public function add_video (Request $request, ObjectManager $manager)
     {
@@ -60,16 +60,38 @@ class AccountRoutesController extends Controller
     }
 
     /**
-     * @Route("/edition_video", name="edit_video_user")
+     * @Route("/espace_videos/edition_video", name="edit_video_user")
+     * @Route("/admin/edition_video/{uuid_user}/{uuid_video}", name="edit_video_user_by_admin")
      */
-    public function edit_video (Request $request, ObjectManager $manager, VideosRepository $videosRepository)
+    public function edit_video (Request $request, ObjectManager $manager, VideosRepository $videosRepository, $uuid_user = null, $uuid_video = null)
     {
-        $id_video = $request->get("v_id");
-        //$id_video = $id;
+        $id_video = "";
+
+        if ($request->get("v_id")) {
+            $id_video = $request->get("v_id");
+        }
+        else {
+            $id_video = $uuid_video;
+        }
 
         $video = $videosRepository->find($id_video);
 
-        $form = $this->createForm( AjoutVideoType::class, $video); //todo mode edit
+        //Si video non existante ou non appartenante à un utilisateur
+        if (!$video)
+        {
+            //Alors redirection vers le dashboard, menu principal
+            return $this->redirectToRoute('dashboard');
+        }
+        else
+        {
+            //Redirection vers le dashboard si video non appartenante à un utilisateur
+            if ($video->getIdUser() !== $uuid_user && $uuid_user)
+            {
+                return $this->redirectToRoute('dashboard');
+            }
+        }
+
+        $form = $this->createForm(AjoutVideoType::class, $video); //todo mode edit
 
         $form->handleRequest($request);
 
@@ -78,7 +100,13 @@ class AccountRoutesController extends Controller
             $manager->persist($video);
             $manager->flush();
 
-            return $this->redirectToRoute('dashboard');
+            //Flash message indication
+            $this->addFlash('mess', 'Les infos de la video ont été changés.');
+
+            if (!$uuid_video)
+                return $this->redirectToRoute('dashboard');
+            else
+                return $this->redirectToRoute('secur_admin_dashboard');
         }
 
         return $this->render ( 'account_routes/edit_video.html.twig', [
@@ -88,24 +116,46 @@ class AccountRoutesController extends Controller
     }
 
     /**
-     * @Route("/suppression_video", name="delete_video_user")
+     * @Route("/espace_videos/suppression_video", name="delete_video_user")
+     * @Route("/admin/suppression_video/{uuid_user}/{uuid_video}", name="delete_video_user_by_admin")
      */
-    public function delete_video (Request $request, ObjectManager $manager, VideosRepository $videosRepository)
+    public function delete_video (Request $request, ObjectManager $manager, VideosRepository $videosRepository, $uuid_user = null, $uuid_video = null)
     {
-        $id_video = $request->get("v_id");
-        //$id_video = $id;
+        if ($request->get("v_id")) {
+            $id_video = $request->get("v_id");
+        }
+        else {
+            $id_video = $uuid_video;
+        }
 
         $video = $videosRepository->find($id_video);
 
-        if ($video->getIdUser()->getId() === $this->getUser()->getId()) {
+        //Si video non existante ou non appartenante à un utilisateur
+        if (!$video)
+        {
+            //Alors redirection vers le dashboard, menu principal
+            return $this->redirectToRoute('dashboard');
+        }
+        else
+        {
+            //Redirection vers le dashboard si video non appartenante à un utilisateur
+            if ($video->getIdUser() !== $uuid_user && $uuid_user)
+            {
+                return $this->redirectToRoute('dashboard');
+            }
+        }
+
+        if ($video->getIdUser()->getId() === $this->getUser()->getId() || $uuid_user) {
 
             $manager->remove($video);
             $manager->flush();
         }
 
         //add flash message here!
-
-        return $this->redirectToRoute('dashboard');
+        if (!$uuid_video)
+            return $this->redirectToRoute('dashboard');
+        else
+            return $this->redirectToRoute('secur_admin_dashboard');
     }
 
 }

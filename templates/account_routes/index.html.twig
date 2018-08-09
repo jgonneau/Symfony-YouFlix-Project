@@ -7,6 +7,9 @@
 <header class="example-wrapper">
     <h1>Hello {{ username }}! </h1>
     <nav>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path("secur_admin_dashboard") }}"><li>Espace admin</li></a>
+        {% endif %}
         <a href="{{ path("edition_profil_user") }}"><li>Editer son profil</li></a>
         <a href="{{ path("add_video_user") }}"><li>Ajouter une vidéo</li></a>
         <li>Rechercher une vidéo</li>
@@ -14,10 +17,12 @@
     </nav>
 </header>
 
+
+
     <div id="content_videos_gallery">
         <ul>
         {%  for video in videos_user %}
-            <li>{{ video.url }}  <a href="/edition_video?v_id={{ video.id }}"><button>Editer</button></a> | <a href="/suppression_video?v_id={{ video.id }}"><button>SUPPR</button></a></li>
+            <li>{{ video.url }}  <a href="{{ path('edit_video_user') }}?v_id={{ video.id }}"><button>Editer</button></a> | <a href="{{ path('delete_video_user') }}?v_id={{ video.id }}"><button>SUPPR</button></a></li>
             <div><iframe width="560" height="315" src=" {{  video.url | replace({'watch?v=': 'embed/'})  ~ '?rel=0&showinfo=0' }} " frameborder="0" allow="encrypted-media" allowfullscreen></iframe></div>
 
 
