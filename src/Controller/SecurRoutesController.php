@@ -17,7 +17,7 @@ use Zend\Code\Scanner\Util;
 class SecurRoutesController extends Controller
 {
     /**
-     * @Route("/", name="secur_inscription")
+     * @Route("/", name="secur_inscription", name="home")
      */
     public function secur_inscription_route(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder)
     {
