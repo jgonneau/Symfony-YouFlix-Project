@@ -28,11 +28,13 @@ class Utilisateur implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min=4, minMessage="Vous devez rentrer plus de cinq caractères pour votre pseudo.")
      */
     private $nickname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     *
      */
     private $email;
 

@@ -17,6 +17,7 @@ class AccountRoutesController extends Controller
      */
     public function index(VideosRepository $videosRepository)
     {
+
         //On recupere les videos associé à l'utilisateur en cours
         $videos = $videosRepository->findBy([
             'iduser' => $this->getUser()->getId(),

@@ -31,7 +31,7 @@ class Videos
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\IsNull(message="Vous devez rentrer un titre.")
+     * @Assert\Length(min=5, minMessage="Vous devez rentrer plus de cinq caractères pour le titre de la vidéo.")
      */
     private $title;
 
@@ -43,6 +43,11 @@ class Videos
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Regex(
+     *     pattern="^http://www.youtube.com/watch\?v=.*",
+     *     match=false,
+     *     message="Le chemin doit commencer par 'http://www.youtube.com/watch?v='"
+     * )
      */
     private $description;
 

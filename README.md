@@ -8,6 +8,8 @@ Docker-compose<br>
 ###### How to start :
 
 ```
+cp .env.dist .env
+
 docker-compose up -d
 docker-compose exec web composer install
 ```
@@ -24,7 +26,16 @@ app:create-admin    (pseudo) (email) (password)
 ````
 
 Access to the database at :
+(id -> root | password -> root)
 ```
 http://localhost:8080 
 ```
-id : root, password : root
+
+Turn application from DEV environnement to PROD environnement :
+```
+#in file .env
+[...]
+APP_ENV=prod
+[...]
+```
+

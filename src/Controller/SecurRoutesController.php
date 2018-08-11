@@ -36,6 +36,9 @@ class SecurRoutesController extends Controller
             $manager->persist($utilisateur);
             $manager->flush();
 
+            //Flash message indication
+            $this->addFlash('info', 'Vous pouvez maintenant essayer de vous connecter à votre compte.');
+
             return $this->redirectToRoute('secur_connexion');
         }
 
