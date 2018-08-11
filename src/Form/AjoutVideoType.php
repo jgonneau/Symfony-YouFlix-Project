@@ -16,8 +16,8 @@ class AjoutVideoType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('url', UrlType::class)
-            ->add('description', TextareaType::class)
+            ->add('url', UrlType::class, ['label' => 'Chemin de la vidéo à uploader'])
+            ->add('description', TextareaType::class, ['label' => 'Description de la vidéo'])
             ->add('submit', SubmitType::class, ['label' => 'Uploader'])
         ;
     }

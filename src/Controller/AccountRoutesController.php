@@ -24,7 +24,8 @@ class AccountRoutesController extends Controller
 
         //Affichage du contenu de l'espace utilisateur avec ses videos
         return $this->render('account_routes/index.html.twig', [
-            'username' => $this->getUser()->getEmail(),
+            'username' => $this->getUser()->getNickname(),
+            'email' => $this->getUser()->getEmail(),
             'videos_user' => $videos,
         ]);
     }
@@ -85,8 +86,8 @@ class AccountRoutesController extends Controller
         //Requete recherche video dans la base de données
         $video = $videosRepository->find($id_video);
 
-        //Si video non existante ou non appartenante à un utilisateur
-        if (!$video)
+        //Si video non existante ou non appartenante à un utilisateur, à part si detection de l'utilisation route admin
+        if (!$video || $video->getIdUser()->getId() != $this->getUser()->getId() && !$uuid_video)
         {
             //Alors redirection vers le dashboard, menu principal
             return $this->redirectToRoute('dashboard');
@@ -143,8 +144,8 @@ class AccountRoutesController extends Controller
         //Requete recherche video dans la base de données
         $video = $videosRepository->find($id_video);
 
-        //Si video non existante ou non appartenante à un utilisateur
-        if (!$video)
+        //Si video non existante ou non appartenante à un utilisateur, à part si detection de l'utilisation route admin
+        if (!$video || $video->getIdUser()->getId() != $this->getUser()->getId() && !$uuid_video)
         {
             //Alors redirection vers le dashboard, menu principal
             return $this->redirectToRoute('dashboard');
@@ -158,7 +159,7 @@ class AccountRoutesController extends Controller
             $manager->flush();
 
             //Flash message indication
-            $this->addFlash('info', 'La vidéo "'.$video->getTitle().'"" a bien été supprimée.');
+            $this->addFlash('info', 'La vidéo "'.$video->getTitle().'" a bien été supprimée.');
         }
 
         //Si $uuid_video existant, alors on determine que l'utilisateur est admin

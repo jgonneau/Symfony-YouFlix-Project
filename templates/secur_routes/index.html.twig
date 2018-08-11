@@ -4,7 +4,6 @@
 
 {% block title %}Bienvenue sur YouFlix !{% endblock %}
 
-
 {% block body %}
 
 
@@ -31,16 +30,17 @@
 
     <div id="main_content" class="d-flex flex-column h-100">
         <div class="d-flex justify-content-center p-2" style="border:solid 2px gray">
-            <div class="p-3 bg-primary text-white">
-                <div class="main_information" class="">
-                    <p>Bienvenue sur la page de YouFlix !<br>Ici vous pouvez héberger vos fichiers videos et créer votre propre playlist !</p>
+            <div class="p-3 bg-primary text-white d-flex justify-content-around flex-column">
+                <div>
+                    <h2 class="text-left">Bienvenue sur la page de YouFlix !<br>Ici vous pouvez héberger vos fichiers videos<br> et créer votre propre playlist !</h2>
                 </div>
             </div>
             <div class="p-3 content_page">
 
                 <div id="form_inscription">
-                    <p class="badge badge-primary">  Rejoignez YouFlix dès maintenant !  </p>
+
                     {{ form_start(form_enreg) }}
+                    <p class="badge badge-primary">  Rejoignez YouFlix dès maintenant !  </p>
                     {{ form_row(form_enreg.nickname) }}
                     {{ form_row(form_enreg.email) }}
                     {{ form_row(form_enreg.birthday) }}

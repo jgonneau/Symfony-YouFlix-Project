@@ -31,11 +31,13 @@ class Videos
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\IsNull(message="Vous devez rentrer un titre.")
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Blank(message="Vous devez rentrer un chemin d'accès.")
      */
     private $url;
 

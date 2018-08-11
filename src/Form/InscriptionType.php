@@ -28,7 +28,7 @@ class InscriptionType extends AbstractType
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'first_options' => array('label' => 'Entrez le mot de passe : ', 'attr' => ['class' => 'form-control']),
-                'second_options' => array('label' => 'Repeter le mot de passe : ', 'attr' => ['class' => 'form-control'])
+                'second_options' => array('label' => 'Répéter le mot de passe : ', 'attr' => ['class' => 'form-control'])
             ])
             ->add('Submit', SubmitType::class, ['label' => 'S\'enregistrer !', 'attr' => [
                 'class' => 'btn btn-primary'
