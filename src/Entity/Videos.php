@@ -37,17 +37,12 @@ class Videos
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Blank(message="Vous devez rentrer un chemin d'accès.")
+     * @Assert\Length(min=8, minMessage="Vous devez rentrer une url de vidéo valide.")
      */
     private $url;
 
     /**
      * @ORM\Column(type="text")
-     * @Assert\Regex(
-     *     pattern="^http://www.youtube.com/watch\?v=.*",
-     *     match=false,
-     *     message="Le chemin doit commencer par 'http://www.youtube.com/watch?v='"
-     * )
      */
     private $description;
 
